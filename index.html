@@ -39,14 +39,140 @@
             /* width: 200px; */
             /* background-color: #000; */
         }
+
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 10;
+            width: 160px;
+            height: 100px;
+            margin-left: -80px;
+            margin-top: -50px;
+            border-radius: 5px;
+            background: #1e3f57;
+            animation: dot1_ 3s cubic-bezier(0.55, 0.3, 0.24, 0.99) infinite;
+        }
+
+        .loader:nth-child(2) {
+            z-index: 11;
+            width: 150px;
+            height: 90px;
+            margin-top: -45px;
+            margin-left: -75px;
+            border-radius: 3px;
+            background: #3c517d;
+            animation-name: dot2_;
+        }
+
+        .loader:nth-child(3) {
+            z-index: 12;
+            width: 40px;
+            height: 20px;
+            margin-top: 50px;
+            margin-left: -20px;
+            border-radius: 0 0 5px 5px;
+            background: #6bb2cd;
+            animation-name: dot3_;
+        }
+
+        @keyframes dot1_ {
+
+            3%,
+            97% {
+                width: 160px;
+                height: 100px;
+                margin-top: -50px;
+                margin-left: -80px;
+            }
+
+            30%,
+            36% {
+                width: 80px;
+                height: 120px;
+                margin-top: -60px;
+                margin-left: -40px;
+            }
+
+            63%,
+            69% {
+                width: 40px;
+                height: 80px;
+                margin-top: -40px;
+                margin-left: -20px;
+            }
+        }
+
+        @keyframes dot2_ {
+
+            3%,
+            97% {
+                height: 90px;
+                width: 150px;
+                margin-left: -75px;
+                margin-top: -45px;
+            }
+
+            30%,
+            36% {
+                width: 70px;
+                height: 96px;
+                margin-left: -35px;
+                margin-top: -48px;
+            }
+
+            63%,
+            69% {
+                width: 32px;
+                height: 60px;
+                margin-left: -16px;
+                margin-top: -30px;
+            }
+        }
+
+        @keyframes dot3_ {
+
+            3%,
+            97% {
+                height: 20px;
+                width: 40px;
+                margin-left: -20px;
+                margin-top: 50px;
+            }
+
+            30%,
+            36% {
+                width: 8px;
+                height: 8px;
+                margin-left: -5px;
+                margin-top: 49px;
+                border-radius: 8px;
+            }
+
+            63%,
+            69% {
+                width: 16px;
+                height: 4px;
+                margin-left: -8px;
+                margin-top: -37px;
+                border-radius: 10px;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <section id="loader">
+        <div class="container">
+            <div class="loader"></div>
+            <div class="loader"></div>
+            <div class="loader"></div>
+        </div>
+    </section>
 
     <section id="login-sec" class="d-flex justify-content-center align-items-center">
-        <div class="border rounded-3 shadow p-4 hide">
-            <p class="text-dark fw-bold">กรุณา Login ด้วยไลน์ เพื่อส่งข้อความไปยังผู้รับ</p>
+        <div class="border rounded-3 shadow p-4" style="display: none;" <p class="text-dark fw-bold">กรุณา Login
+            ด้วยไลน์ เพื่อส่งข้อความไปยังผู้รับ</p>
             <div class="col-12 text-center mt-2">
                 <button class="btn btn-lg linebg text-light" id="login-btn"><img
                         src="https://img.icons8.com/fluency-systems-regular/48/ffffff/line-me.png" />Login</button>
@@ -64,7 +190,7 @@
                     <input type="text" class="form-control" id="altText" maxlength="400">
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class=" justify-content-center gap-2 d-flex flex-column-reverse flex-md-row mt-3 mt-md-3">
                 <div class="col-md-7 mt-3">
                     <label for="json">JSON</label>
                     <textarea name="json" id="json" rows="15" class="form-control"></textarea>
@@ -89,7 +215,11 @@
                 <div class="col-md-5 rounded"
                     style="background-color: #849ebf;background-image: url(./line\ bg.jpg);background-size: contain;overflow: auto;">
                     <div class="reset-this">
-                        <div id="flex-show" style="padding-top: 10px;"></div>
+                        <div id="flex-show" style="padding-top: 10px;">
+                            <div class="text-light w-100 text-center my-3">
+                                พื้นที่แสดงตัวอย่าง Flex จะปรากฏที่นี่
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -147,14 +277,14 @@
 
         // VConsole will be exported to `window.VConsole` by default.
 
-        var vConsole = new window.VConsole();
+        // var vConsole = new window.VConsole();
 
     </script> -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script>
         var Toast
         $(document).ready(() => {
-            $.LoadingOverlay("show");
+            // $.LoadingOverlay("show");
             Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -188,63 +318,95 @@
         }
     </script>
     <script>
-        var profile, flexlist
-        var scripturl = 'https://script.google.com/macros/s/AKfycbyzG1Rvks3zwXHmHjIga9hlLTyqZg88WRHxXU3TltA3r7yaLCd8MC0dlxzp9zQ_uUAh/exec'
-        var parameter = new URLSearchParams(window.location.search)
-        var flexid = parameter.get('flexid')
+        const EXPIRE_USERS = []
+        var profile, flexlist, flexid
+        var scripturl = 'https://script.google.com/macros/s/AKfycbwptWJ45Tt5_iq3u4NgOXpWOGHckz7Bx4_yzBWW-F0uG5euKlCTraPfk2oGlqmWO49R/exec'
+        var starttime = new Date().getTime()
         async function main() {
-            await liff.init({ liffId: '1655873446-V51vbbQ7', withLoginOnExternalBrowser: true });
-            if (liff.isLoggedIn()) {
-                if (flexid) {
-                    $.post(scripturl, {
-                        id: parameter.get('flexid')
-                    }).done(function (result) {
-                        console.log("🚀 ~ $ ~ result:", result)
-                        if (result.result) {
-                            $.LoadingOverlay("hide");
-                            $('#json').val(result.flex)
-                            $('#altText').val(result.altText)
-                            $('#shared').click()
-                        } else {
-                            $('section').remove()
-                            $('.modal').remove()
-                            $.LoadingOverlay("hide");
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'เกิดข้อผิดพลาด',
-                                text: 'ไม่พบข้อมูล Flex ที่คุณต้องการ',
-                                allowOutsideClick: false,
-                                showConfirmButton: true,
-                                confirmButtonText: 'ปิดหน้านี้',
-                            }).then(() => {
-                                liff.closeWindow()
-                            })
-                        }
-                    })
-                } else {
-                    $.LoadingOverlay("hide");
-                    $('#login-sec').removeClass('d-flex').hide();
-                    $('#input-sec').slideDown(200);
-                    let context = await liff.getContext()
-                    if (context.type == 'square_chat') {
-                        profile = { displayName: 'openchat', userId: context.squareMemberId, isSquare: true }
-                    } else profile = await liff.getProfile();
-                    $('#displayName').html(profile.displayName);
-                    $('#display-img').attr('src', profile.pictureUrl);
-                    if (liff.isInClient() || liff.getContext().type === 'square_chat') {
-                        $('#send').slideDown(200);
-                    }
-                    getFlex()
+            liff.init({
+                liffId: '2005468534-pmqDXKMY',
+                withLoginOnExternalBrowser: true
+            });
+            liff.ready.then(async () => {
+                // if loader show less than 3 sec then wait 3 sec
+                let endtime = new Date().getTime()
+                let waittime = 3000 - (endtime - starttime)
+                if (waittime > 0) {
+                    await new Promise(resolve => setTimeout(resolve, waittime))
                 }
-            } else {
-                $.LoadingOverlay("hide");
-                $('#login-sec div').slideDown(200);
-                $('#login-btn').click(function () {
-                    liff.login({ redirectUri: window.location.href });
-                })
-            }
+
+                console.log('liff ready')
+                if (liff.isLoggedIn()) {
+                    if (EXPIRE_USERS.includes(liff.getDecodedIDToken().sub)) {
+                        $('section').remove()
+                        $('.modal').remove()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'การทดลองใช้งานหมดอายุ',
+                            html: 'กรุณาติดต่อผู้พัฒนาเพื่อใช้งานเวอร์ชั่นเต็ม<br>Line ID: <a href="https://line.me/ti/p/FrAUVjmBeJ" target="_blank">wmhakrook</a><br>หรือ โทร <a href="tel:0904017402">090-401-7402</a><br>ขอบคุณครับ',
+                            allowOutsideClick: false,
+                            showConfirmButton: true,
+                            confirmButtonText: 'ปิดหน้านี้',
+                        }).then(() => {
+                            liff.closeWindow()
+                        })
+                    }
+                    var parameter = new URLSearchParams(window.location.search)
+                    flexid = parameter.get('flexid')
+                    if (flexid) {
+                        $.post(scripturl, {
+                            id: parameter.get('flexid')
+                        }).done(function (result) {
+                            console.log("🚀 ~ $ ~ result:", result)
+                            if (result.result) {
+                                $('#loader').hide()
+                                $('#json').val(result.flex)
+                                $('#altText').val(result.altText)
+                                $('#shared').click()
+                            } else {
+                                $('section').remove()
+                                $('.modal').remove()
+                                $('#loader').hide()
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'เกิดข้อผิดพลาด',
+                                    text: 'ไม่พบข้อมูล Flex ที่คุณต้องการ',
+                                    allowOutsideClick: false,
+                                    showConfirmButton: true,
+                                    confirmButtonText: 'ปิดหน้านี้',
+                                }).then(() => {
+                                    liff.closeWindow()
+                                })
+                            }
+                        })
+                    } else {
+                        $('#loader').hide()
+                        $('#login-sec').removeClass('d-flex').hide();
+                        $('#input-sec').slideDown(200);
+                        let context = await liff.getContext()
+                        if (context.type == 'square_chat') {
+                            profile = {displayName: 'openchat', userId: context.squareMemberId, isSquare: true}
+                        } else profile = await liff.getProfile();
+                        $('#displayName').html(profile.displayName);
+                        $('#display-img').attr('src', profile.pictureUrl);
+                        if (liff.isInClient() || liff.getContext().type === 'square_chat') {
+                            $('#send').slideDown(200);
+                        }
+                        getFlex()
+                    }
+                }
+                else {
+                    $('#loader').hide()
+                    $('#login-sec div').slideDown(200);
+                    $('#login-btn').click(function () {
+                        liff.login({redirectUri: window.location.href});
+                    })
+                }
+            })
+
+
         }
-        // getFlex()
+    // getFlex()
     </script>
     <script>
         $('#altText').on('input', function () {
@@ -252,14 +414,16 @@
             $('#text-count').text(`(${text.length}/400)`)
         })
         $('#json').on('input', function () {
-            if($(this).val() == '') {
-                $('#flex-show').html('')
+            if ($(this).val() == '') {
+                $('#flex-show').html('<div class="text-light w-100 text-center my-3">พื้นที่แสดงตัวอย่าง Flex จะปรากฏที่นี่</div>')
                 return false
             }
             let json = getJSON(true)
             if (json) {
                 $('#flex-show').html('')
                 flex2html('flex-show', json)
+                // get action from json tree
+                // let actions = getAction(json)
             } else {
                 $('#flex-show').html(`<div style="color: white; font-size: 1rem; text-align: center; padding-top: 20px">
                         Invalid JSON
@@ -268,7 +432,6 @@
         })
         $('#preview').click(function () {
             let flex = getJSON()
-            console.log("🚀 ~ flex:", flex)
             if (flex) {
                 $('#flex1').html('');
                 flex2html("flex1", flex);
@@ -277,7 +440,6 @@
         })
         $('#shared').click(function () {
             var flex = getJSON()
-            console.log("🚀 ~ flex", flex);
             if (flex) {
                 if (JSON.stringify(flex).indexOf('{{share}}') > -1 && !flexid) {
                     Swal.fire({
@@ -355,7 +517,6 @@
             }
         })
         function update(id) {
-            console.log("🚀 ~ id", id)
             let flex
             try {
                 flex = JSON.parse($('#flex1').find('textarea').val())
@@ -473,6 +634,17 @@
             }
             return flex
         }
+
+        // function getAction(json) {
+        //     Object.keys(json).forEach(function (key) {
+        //         if (key == 'action') {
+        //             console.log(json[key])
+        //         } else if (typeof json[key] === 'object') {
+        //             getAction(json[key])
+        //         }
+        //     })
+        // }
+
         async function sendShare(flex) {
             const result = await liff.shareTargetPicker([flex]);
             if (result) {
@@ -491,6 +663,7 @@
                 ).split('.');
                 if (minorVer === undefined) {
                     console.log('ShareTargetPicker was canceled in external browser');
+                    liff.closeWindow();
                     return;
                 }
                 if (
@@ -499,6 +672,7 @@
                     parseInt(patchVer) > 0
                 ) {
                     console.log('ShareTargetPicker was canceled in LINE app');
+                    liff.closeWindow();
                 }
             }
         }
